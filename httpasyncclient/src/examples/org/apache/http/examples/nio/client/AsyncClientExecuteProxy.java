@@ -38,7 +38,7 @@ import org.apache.http.impl.nio.client.HttpAsyncClients;
 
 /**
  * This example demonstrates a basic asynchronous HTTP request / response exchange
- * via an HTTP proxy.
+ * via an HTTP proxy.代理用来隐藏自己的ip
  */
 public class AsyncClientExecuteProxy {
 

@@ -39,7 +39,7 @@ import org.apache.http.impl.nio.client.HttpAsyncClients;
 
 /**
  * This example demonstrates a pipelinfed execution of multiple HTTP request / response exchanges
- * Response content is buffered in memory for simplicity.
+ * Response content is buffered in memory for simplicity. 流水线执行，也就是按顺序执行
  */
 public class AsyncClientPipelined {
 

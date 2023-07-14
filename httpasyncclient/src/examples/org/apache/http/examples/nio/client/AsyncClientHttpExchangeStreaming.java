@@ -49,7 +49,7 @@ public class AsyncClientHttpExchangeStreaming {
         try {
             httpclient.start();
             Future<Boolean> future = httpclient.execute(
-                    HttpAsyncMethods.createGet("http://httpbin.org/"),
+                    HttpAsyncMethods.createGet("http://httpbin.org/"),// HttpAsyncRequestProducer，生产传参URI的request
                     new MyResponseConsumer(), null);
             Boolean result = future.get();
             if (result != null && result.booleanValue()) {

@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topics>
+  <topic>
+    <name>请求发送</name>
+    <note>对于连接池，每个连接分配给一个请求，当请求完成后（读取完response），连接才会释放给其他请求使用。</note>
+    <updatedAt>2023-07-12 19:02:14</updatedAt>
+    <topicLines>
+      <topicLine>
+        <line>336</line>
+        <inProject>true</inProject>
+        <url>file:///Users/panning/IdeaProjects/httpasyncclient/httpasyncclient/src/test/java/org/apache/http/nio/client/integration/TestHttpAsync.java</url>
+        <note>执行请求</note>
+        <relativePath>httpasyncclient/src/test/java/org/apache/http/nio/client/integration/TestHttpAsync.java</relativePath>
+      </topicLine>
+      <topicLine>
+        <line>128</line>
+        <inProject>true</inProject>
+        <url>file:///Users/panning/IdeaProjects/httpasyncclient/httpasyncclient/src/main/java/org/apache/http/impl/nio/client/InternalHttpAsyncClient.java</url>
+        <note>创建DefaultClientExchangeHandlerImpl，request和response交换会被调用</note>
+        <relativePath>httpasyncclient/src/main/java/org/apache/http/impl/nio/client/InternalHttpAsyncClient.java</relativePath>
+      </topicLine>
+      <topicLine>
+        <line>128</line>
+        <inProject>true</inProject>
+        <url>file:///Users/panning/IdeaProjects/httpasyncclient/httpasyncclient/src/main/java/org/apache/http/impl/nio/client/DefaultClientExchangeHandlerImpl.java</url>
+        <note>发起请求</note>
+        <relativePath>httpasyncclient/src/main/java/org/apache/http/impl/nio/client/DefaultClientExchangeHandlerImpl.java</relativePath>
+      </topicLine>
+      <topicLine>
+        <line>265</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>pool执行请求</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>277</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>获取整个连接池的锁.这里性能比较差，5.0版本已经降低锁的粒度，优化成获取单个route pool的锁</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>279</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>申请租用连接。completed标识该请求是否会有可用的连接，包括availible和pending</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>409</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>如果租用连接超时返回失败</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>414</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>获取route连接池，没有则新建</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>417</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>获取对应state（默认为null）可用（avaliable）的连接。获取到了则检查连接是否过期或关闭，如果是则删除连接并再次申请</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>429</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>要使用这个连接了，更新线程池维护的三种连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>441</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>下面是需要new connection的情况。如果当前route pool已创建的连接数加1大于最大连接数，则释放差值数的route pool中的可用连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>461</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>maxTotal配置的应用逻辑：
+如果pending+leased等于maxTotal，肯定申请不到连接。可用连接数大于剩余连接容量-1(要申请的算一个)，则需要释放一个可用连接，给新的请求让出一个连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>473</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>根据route解析出一个IP</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>480</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>将请求放入了请求Queue中，并唤醒了主selector。boss线程会去创建新的连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>342</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractMultiworkerIOReactor.java</url>
+        <note>boss线程被唤醒</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>249</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/DefaultConnectingIOReactor.java</url>
+        <note>遍历要创建新channel的request</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>255</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/DefaultConnectingIOReactor.java</url>
+        <note>创建socket</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>272</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/DefaultConnectingIOReactor.java</url>
+        <note>连接remote address</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>275</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/DefaultConnectingIOReactor.java</url>
+        <note>创建连接成功则将channel分配给worker</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>221</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractIOReactor.java</url>
+        <note>唤醒worker的selector</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>290</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/DefaultConnectingIOReactor.java</url>
+        <note>没连接成功则将channel注册到selector，等待CONNECT事件触发，再进行处理走相同流程</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>158</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/DefaultConnectingIOReactor.java</url>
+        <note>处理CONNECT事件，将channel分配给worker</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>487</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>将请求加入到pending</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>280</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>leaseRequest.isDone()标识请求已经获取到了连接，只包含availible</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>281</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>没有可用连接则将请求加入leasingRequests(正在申请租用的请求)，后面会再进行申请连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>284</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>租用完成的请求加入，completedRequests</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>246</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractIOReactor.java</url>
+        <note>worker循环监听channel的IO event进行处理</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>359</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractIOReactor.java</url>
+        <note>将channel和worker绑定时唤醒了channel对应的selector，走到这里：worker处理新创建的channel</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>368</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractIOReactor.java</url>
+        <note>注册OP_READ事件</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>423</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractIOReactor.java</url>
+        <note>1.创建connection，2.往AbstractNIOConnPool.leased放入CPoolEntry.3.设置可写事件4.AbstractNIOConnPool.pending删除该请求</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>275</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractIOReactor.java</url>
+        <note>worker处理事件的方法</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>184</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/BaseIOReactor.java</url>
+        <note>处理write事件</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>289</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/DefaultNHttpClientConnection.java</url>
+        <note>对请求进行编码</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>296</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/DefaultNHttpClientConnection.java</url>
+        <note>向channel写入数据</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>154</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/BaseIOReactor.java</url>
+        <note>处理read事件</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>161</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/BaseIOReactor.java</url>
+        <note>从管道读取数据</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>231</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/DefaultNHttpClientConnection.java</url>
+        <note>走到这里</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>240</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/DefaultNHttpClientConnection.java</url>
+        <note>读取字节流</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>244</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/DefaultNHttpClientConnection.java</url>
+        <note>解析http头部数据</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>248</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/DefaultNHttpClientConnection.java</url>
+        <note>基于response的配置初始化ContentDecoder</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>263</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/DefaultNHttpClientConnection.java</url>
+        <note>1.读取body,2.会存在释放管道的行为.3.响应用户</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>336</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/protocol/HttpAsyncRequestExecutor.java</url>
+        <note>response内容是否读取完成</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>244</line>
+        <inProject>true</inProject>
+        <url>file:///Users/panning/IdeaProjects/httpasyncclient/httpasyncclient/src/main/java/org/apache/http/impl/nio/client/AbstractClientExchangeHandler.java</url>
+        <note>response读取完成触发connection release</note>
+        <relativePath>httpasyncclient/src/main/java/org/apache/http/impl/nio/client/AbstractClientExchangeHandler.java</relativePath>
+      </topicLine>
+      <topicLine>
+        <line>345</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>将连接从leased删除，加入available</note>
+        <relativePath />
+      </topicLine>
+    </topicLines>
+  </topic>
+  <topic>
+    <name>AbstractNIOConnPool</name>
+    <note>连接池</note>
+    <updatedAt>2023-07-10 10:59:06</updatedAt>
+    <topicLines>
+      <topicLine>
+        <line>85</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>可用连接，包含所有route的可用连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>84</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>租借出去的连接，包含所有route租借出去的连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>83</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/AbstractNIOConnPool.java</url>
+        <note>当前连接数没到maxPerRoute,可以创建新的连接的请求，包含所有route的</note>
+        <relativePath />
+      </topicLine>
+    </topicLines>
+  </topic>
+  <topic>
+    <name>RouteSpecificPool</name>
+    <note>route对应的连接池</note>
+    <updatedAt>2023-07-10 10:38:50</updatedAt>
+    <topicLines>
+      <topicLine>
+        <line>45</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/RouteSpecificPool.java</url>
+        <note>已经租借出去的连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>46</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/RouteSpecificPool.java</url>
+        <note>当前可用的连接</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>47</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/nio/pool/RouteSpecificPool.java</url>
+        <note>当前连接数没到maxPerRoute,可以创建新的连接的请求</note>
+        <relativePath />
+      </topicLine>
+    </topicLines>
+  </topic>
+  <topic>
+    <name>连接建立</name>
+    <note />
+    <updatedAt>2023-07-07 17:46:40</updatedAt>
+    <topicLines>
+      <topicLine>
+        <line>57</line>
+        <inProject>true</inProject>
+        <url>file:///Users/panning/IdeaProjects/httpasyncclient/httpasyncclient/src/main/java/org/apache/http/impl/nio/client/CloseableHttpAsyncClientBase.java</url>
+        <note>boss（main） thread初始化</note>
+        <relativePath>httpasyncclient/src/main/java/org/apache/http/impl/nio/client/CloseableHttpAsyncClientBase.java</relativePath>
+      </topicLine>
+      <topicLine>
+        <line>63</line>
+        <inProject>true</inProject>
+        <url>file:///Users/panning/IdeaProjects/httpasyncclient/httpasyncclient/src/main/java/org/apache/http/impl/nio/client/CloseableHttpAsyncClientBase.java</url>
+        <note>connmgr执行，传参IOEventDispatch</note>
+        <relativePath>httpasyncclient/src/main/java/org/apache/http/impl/nio/client/CloseableHttpAsyncClientBase.java</relativePath>
+      </topicLine>
+      <topicLine>
+        <line>326</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractMultiworkerIOReactor.java</url>
+        <note>初始化worker，多个worker启动后BaseIOReactor循环监听读写类型的IO event并分发给IOEventDispatch执行。</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>339</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractMultiworkerIOReactor.java</url>
+        <note>boss持续监听IO event</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>161</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/DefaultConnectingIOReactor.java</url>
+        <note>处理连接请求</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>177</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/DefaultConnectingIOReactor.java</url>
+        <note>将channel分配给worker（BaseIOReactor）执行</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>476</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractMultiworkerIOReactor.java</url>
+        <note>按round robin，将channel分配给BaseIOReactor</note>
+        <relativePath />
+      </topicLine>
+      <topicLine>
+        <line>250</line>
+        <inProject>false</inProject>
+        <url>jar:///Users/panning/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11-sources.jar!/org/apache/http/impl/nio/reactor/AbstractIOReactor.java</url>
+        <note>worker内部循环监听IO event，对read write事件进行处理</note>
+        <relativePath />
+      </topicLine>
+    </topicLines>
+  </topic>
+</topics>
+

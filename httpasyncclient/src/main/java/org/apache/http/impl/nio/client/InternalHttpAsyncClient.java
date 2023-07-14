@@ -56,10 +56,10 @@ class InternalHttpAsyncClient extends CloseableHttpAsyncClientBase {
 
     private final Log log = LogFactory.getLog(getClass());
 
-    private final NHttpClientConnectionManager connmgr;
-    private final ConnectionReuseStrategy connReuseStrategy;
-    private final ConnectionKeepAliveStrategy keepaliveStrategy;
-    private final InternalClientExec exec;
+    private final NHttpClientConnectionManager connmgr; // 管理持久化的客户端连接，保证同一时间一个连接只会被一个线程使用
+    private final ConnectionReuseStrategy connReuseStrategy;// 用于判断一个连接是否应该被之后的请求复用，相当于http中的keep alive
+    private final ConnectionKeepAliveStrategy keepaliveStrategy;// 决定一个连接在被复用前，可以保持idle状态多久
+    private final InternalClientExec exec;// 负责处理请求发送和接收的处理
     private final Lookup<CookieSpecProvider> cookieSpecRegistry;
     private final Lookup<AuthSchemeProvider> authSchemeRegistry;
     private final CookieStore cookieStore;
@@ -126,7 +126,7 @@ class InternalHttpAsyncClient extends CloseableHttpAsyncClientBase {
             context != null ? context : new BasicHttpContext());
         setupContext(localcontext);
 
-        final DefaultClientExchangeHandlerImpl<T> handler = new DefaultClientExchangeHandlerImpl<T>(
+        final DefaultClientExchangeHandlerImpl<T> handler = new DefaultClientExchangeHandlerImpl<T>(// http消息交换会触发该类的方法
             this.log,
             requestProducer,
             responseConsumer,

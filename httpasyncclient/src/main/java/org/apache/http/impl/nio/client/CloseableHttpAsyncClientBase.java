@@ -44,7 +44,7 @@ abstract class CloseableHttpAsyncClientBase extends CloseableHttpPipeliningClien
     static enum Status {INACTIVE, ACTIVE, STOPPED}
 
     private final NHttpClientConnectionManager connmgr;
-    private final Thread reactorThread;
+    private final Thread reactorThread;// 类似netty的boss线程，负责管道建立连接
 
     private final AtomicReference<Status> status;
 

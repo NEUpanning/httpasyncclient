@@ -35,7 +35,13 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpHead;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
+import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.localserver.HttpAsyncTestBase;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -54,6 +60,7 @@ import org.apache.http.nio.entity.NByteArrayEntity;
 import org.apache.http.nio.protocol.BasicAsyncRequestHandler;
 import org.apache.http.nio.protocol.BasicAsyncResponseConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestProducer;
+import org.apache.http.nio.reactor.IOReactorExceptionHandler;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -282,4 +289,71 @@ public class TestHttpAsync extends HttpAsyncTestBase {
         HttpAsyncClientUtils.closeQuietly(this.httpclient);
     }
 
+    @Test
+    public void forCodeReading() throws IOException, InterruptedException {
+        RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
+            .setConnectTimeout(5000)
+            .setSocketTimeout(0)
+            .setConnectionRequestTimeout(3000);
+        HttpAsyncClientBuilder httpClientBuilder = HttpAsyncClientBuilder.create().setDefaultRequestConfig(requestConfigBuilder.build())
+            // 这些参数会用来生成PoolingNHttpClientConnectionManager，若PoolingNHttpClientConnectionManager自定义了，那么这些参数也就无效了
+            .setMaxConnPerRoute(10).setMaxConnTotal(30);
+        //配置io线程
+        IOReactorConfig ioReactorConfig = IOReactorConfig.custom().
+                setIoThreadCount(Runtime.getRuntime().availableProcessors())
+            .setSoKeepAlive(true)
+            .build();
+        DefaultConnectingIOReactor ioReactor = new DefaultConnectingIOReactor(ioReactorConfig);
+
+        ioReactor.setExceptionHandler(new IOReactorExceptionHandler() {
+            @Override
+            public boolean handle(IOException e) {
+                System.out.println("dsdsdsd");
+                return true;
+            }
+            @Override
+            public boolean handle(RuntimeException e) {
+                System.out.println("dsssd");
+                return true;
+
+            }
+        });
+        // 设置channel连接池并发参数
+        PoolingNHttpClientConnectionManager poolingNHttpClientConnectionManager = new PoolingNHttpClientConnectionManager(ioReactor);
+        poolingNHttpClientConnectionManager.setDefaultMaxPerRoute(5);
+        poolingNHttpClientConnectionManager.setMaxTotal(80);
+        httpClientBuilder.setConnectionManager(poolingNHttpClientConnectionManager);
+
+
+        // 初始化Client并启动
+        CloseableHttpAsyncClient client = HttpAsyncClients.custom().
+                setConnectionManager(poolingNHttpClientConnectionManager)
+            .build();
+        client.start();
+
+        final HttpGet request = new HttpGet("https://www.baidu.com/");
+
+        // 异步查询
+        client.execute(request, new FutureCallback<HttpResponse>() {
+            @Override
+            public void completed(HttpResponse result){
+                try {
+
+                    System.out.println(EntityUtils.toString(result.getEntity()));
+                } catch (Exception e) {
+                    e.fillInStackTrace();
+                }
+            }
+            @Override
+            public void failed(Exception ex) {
+                ex.fillInStackTrace();
+            }
+            @Override
+            public void cancelled() {
+                System.out.println("cancelled");
+            }
+        });
+        Thread.sleep(1000000);
+        client.close();
+    }
 }

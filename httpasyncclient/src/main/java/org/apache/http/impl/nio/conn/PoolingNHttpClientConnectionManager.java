@@ -99,8 +99,8 @@ public class PoolingNHttpClientConnectionManager
 
     static final String IOSESSION_FACTORY_REGISTRY = "http.ioSession-factory-registry";
 
-    private final ConnectingIOReactor ioReactor;
-    private final ConfigData configData;
+    private final ConnectingIOReactor ioReactor;//
+    private final ConfigData configData;// http-host -> connection config
     private final CPool pool;
     private final Registry<SchemeIOSessionStrategy> ioSessionFactoryRegistry;
 

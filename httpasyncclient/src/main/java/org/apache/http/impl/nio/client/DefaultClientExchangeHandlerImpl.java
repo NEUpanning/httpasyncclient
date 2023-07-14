@@ -71,8 +71,8 @@ class DefaultClientExchangeHandlerImpl<T> extends AbstractClientExchangeHandler 
             final ConnectionKeepAliveStrategy keepaliveStrategy,
             final InternalClientExec exec) {
         super(log, localContext, connmgr, connReuseStrategy, keepaliveStrategy);
-        this.requestProducer = requestProducer;
-        this.responseConsumer = responseConsumer;
+        this.requestProducer = requestProducer; // 生成request
+        this.responseConsumer = responseConsumer; // 处理response
         this.resultFuture = resultFuture;
         this.exec = exec;
         this.state = new InternalState(getId(), requestProducer, responseConsumer, localContext);

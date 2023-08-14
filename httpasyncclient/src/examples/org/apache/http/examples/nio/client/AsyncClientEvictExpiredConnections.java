@@ -93,7 +93,7 @@ public class AsyncClientEvictExpiredConnections {
             latch.await();
 
             // Sleep 10 sec and let the connection evictor do its job
-            Thread.sleep(20000);
+            Thread.sleep(10000);
 
             // Shut down the evictor thread
             connEvictor.shutdown();
@@ -120,9 +120,9 @@ public class AsyncClientEvictExpiredConnections {
             try {
                 while (!shutdown) {
                     synchronized (this) {
-                        wait(5000);
+                        wait(500000);
                         // Close expired connections
-                        connMgr.closeExpiredConnections();
+                        connMgr.closeExpiredConnections(); // 传参时配置连接过期时间，默认无过期时间
                         // Optionally, close connections
                         // that have been idle longer than 5 sec
                         connMgr.closeIdleConnections(5, TimeUnit.SECONDS);

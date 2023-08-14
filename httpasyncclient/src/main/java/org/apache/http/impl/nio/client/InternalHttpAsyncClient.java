@@ -26,10 +26,6 @@
  */
 package org.apache.http.impl.nio.client;
 
-import java.util.List;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.ConnectionReuseStrategy;
@@ -51,6 +47,10 @@ import org.apache.http.nio.protocol.HttpAsyncRequestProducer;
 import org.apache.http.nio.protocol.HttpAsyncResponseConsumer;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 class InternalHttpAsyncClient extends CloseableHttpAsyncClientBase {
 

@@ -321,7 +321,7 @@ public class TestHttpAsync extends HttpAsyncTestBase {
         // 设置channel连接池并发参数
         PoolingNHttpClientConnectionManager poolingNHttpClientConnectionManager = new PoolingNHttpClientConnectionManager(ioReactor);
         poolingNHttpClientConnectionManager.setDefaultMaxPerRoute(5);
-        poolingNHttpClientConnectionManager.setMaxTotal(80);
+//        poolingNHttpClientConnectionManager.setMaxTotal(80);
         httpClientBuilder.setConnectionManager(poolingNHttpClientConnectionManager);
 
 
@@ -331,28 +331,30 @@ public class TestHttpAsync extends HttpAsyncTestBase {
             .build();
         client.start();
 
-        final HttpGet request = new HttpGet("https://www.baidu.com/");
+        final HttpGet request = new HttpGet("http://localhost:9201/_cat/nodes");
 
         // 异步查询
-        client.execute(request, new FutureCallback<HttpResponse>() {
-            @Override
-            public void completed(HttpResponse result){
-                try {
+        for (int i = 0; i < 10; i++) {
+            client.execute(request, new FutureCallback<HttpResponse>() {
+                @Override
+                public void completed(HttpResponse result){
+                    try {
 
-                    System.out.println(EntityUtils.toString(result.getEntity()));
-                } catch (Exception e) {
-                    e.fillInStackTrace();
+                        System.out.println(EntityUtils.toString(result.getEntity()));
+                    } catch (Exception e) {
+                        e.fillInStackTrace();
+                    }
                 }
-            }
-            @Override
-            public void failed(Exception ex) {
-                ex.fillInStackTrace();
-            }
-            @Override
-            public void cancelled() {
-                System.out.println("cancelled");
-            }
-        });
+                @Override
+                public void failed(Exception ex) {
+                    ex.fillInStackTrace();
+                }
+                @Override
+                public void cancelled() {
+                    System.out.println("cancelled");
+                }
+            });
+        }
         Thread.sleep(1000000);
         client.close();
     }
